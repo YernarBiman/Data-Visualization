@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<script src="https://unpkg.com/timelines-chart@2"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/6.7.0/d3.min.js"></script>
+</head>
+
+<body>
+	<div id="body"></div>
+
+	<script>
+		function eval(ordinal = false) {
+			let groupNum = 5, maxLine = 15, maxSegment = 60, maxCategories = 15, minTime = new Date(2007,2,21);
+			let nCategories = Math.ceil(Math.random()*maxCategories)
+			const categories = ['solar,dust,ray', 'acceleration,pioneer,gravitational', 'space,system,control', 'coronal,cmes,cme', 'dust,pioneer,ray'];
+			let returnArray = []
+			for (let i = 0; i < groupNum; i++){
+				returnArray.push({
+					group: "group: " + (i + 1),
+					data: evalGData()
+				})
+			}
+			return returnArray
+
+			function evalGData() {
+				let returnGArray = []
+				let rand = Math.ceil(Math.random()*maxLine)
+				for (let i = 0; i < rand; i++) {
+					returnGArray.push({
+						label: "label: " + (i + 1),
+						data: evalSData()
+					})
+				}
+				return returnGArray
+
+				function evalSData() {
+					let segmentsCount = Math.ceil(Math.random() * maxSegment)
+					let segMaxCount = Math.round(((new Date()) - minTime) / segmentsCount);
+					let runCount = minTime;
+
+					let returnSArray = []
+					for (let i = 0; i < segmentsCount; i++) {
+						let separator = [Math.random(), Math.random()].sort()
+						let range = []
+						range.push (new Date(runCount.getTime() + separator[0] * segMaxCount))
+						range.push (new Date(runCount.getTime() + separator[1] * segMaxCount))
+
+						runCount = new Date(runCount.getTime() + segMaxCount);
+
+						if(ordinal){
+							returnSArray.push({
+								timeRange: range,
+								val: categories[Math.ceil(Math.random()*nCategories)]
+							})
+						}else {
+							returnSArray.push({
+								timeRange: range,
+								val: Math.random()
+							})
+						}
+					}
+					return returnSArray
+				}
+			}
+		}
+
+		TimelinesChart()
+			.data(eval(true))
+			.zQualitative(true)
+			(document.getElementById('body'));
+	</script>
+</body>
+</html>
